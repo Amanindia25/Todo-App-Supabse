@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
-const page = () => {
+const Page = () => {
   const router = useRouter();
   const supabase = createClient();
   const [todos, setTodos] = useState([]);
@@ -289,175 +289,190 @@ const page = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-slate-900">
-    <main className="p-6 max-w-4xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-center">📝 Your Todo Dashboard</h1>
+      <main className="p-6 max-w-4xl mx-auto space-y-6">
+        <h1 className="text-2xl font-bold text-center">
+          📝 Your Todo Dashboard
+        </h1>
 
-      {/* Add Todo */}
-      <Card>
-        <CardContent className="p-4 flex flex-col gap-3">
-          <div className="flex gap-2">
-            <Input
-              placeholder="Title"
-              value={newTodo.title}
-              onChange={(e) =>
-                setNewTodo({ ...newTodo, title: e.target.value })
-              }
-            />
-            <Button variant="ghost" onClick={() => startSpeech("title")}>
-              {isListeningTitle ? <Mic size={20} /> : <MicOff size={20} />}
-            </Button>
-          </div>
-          <div className="flex gap-2">
-            <Input
-              placeholder="Description"
-              value={newTodo.description}
-              onChange={(e) =>
-                setNewTodo({ ...newTodo, description: e.target.value })
-              }
-            />
-            <Button variant="ghost" onClick={() => startSpeech("description")}>
-              {isListeningDescription ? (
-                <Mic size={20} />
-              ) : (
-                <MicOff size={20} />
-              )}
-            </Button>
-          </div>
-          <Button onClick={handleAddTodo} className="w-fit" disabled={isAdding}>
-            <Plus size={18} className="mr-2" /> Add Todo
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Filter + Stats */}
-      <div className="flex justify-between items-center flex-wrap gap-3">
-        <div className="space-x-2">
-          <Button
-            variant={filter === "all" ? "default" : "outline"}
-            onClick={() => setFilter("all")}
-          >
-            All
-          </Button>
-          <Button
-            variant={filter === "completed" ? "default" : "outline"}
-            onClick={() => setFilter("completed")}
-          >
-            Completed
-          </Button>
-          <Button
-            variant={filter === "remaining" ? "default" : "outline"}
-            onClick={() => setFilter("remaining")}
-          >
-            Remaining
-          </Button>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          📊 Total: {stats.total} | ✅ Completed: {stats.completed} | ⏳
-          Remaining: {stats.remaining}
-        </div>
-      </div>
-
-      {/* Todo List */}
-      <div className="space-y-4">
-        {loading ? (
-          <p className="text-center">Loading...</p>
-        ) : filteredTodos.length === 0 ? (
-          <p className="text-center text-muted-foreground">No todos to show.</p>
-        ) : (
-          filteredTodos.map((todo) => (
-            <Card key={todo.id}>
-              <CardContent className="p-4 flex justify-between items-start">
-                {editingTodoId === todo.id ? (
-                  <div className="flex-1 space-y-2">
-                    <Input
-                      value={editData.title}
-                      onChange={(e) =>
-                        setEditData({ ...editData, title: e.target.value })
-                      }
-                    />
-                    <Input
-                      value={editData.description}
-                      onChange={(e) =>
-                        setEditData({
-                          ...editData,
-                          description: e.target.value,
-                        })
-                      }
-                    />
-                    <div className="flex gap-2 mt-2">
-                      <Button onClick={() => handleSaveEdit(todo.id)} size="sm" disabled={isSavingEdit}>
-                        <Save size={16} className="mr-1" />
-                        Save
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        onClick={() => setEditingTodoId(null)}
-                        size="sm"
-                      >
-                        <X size={16} /> Cancel
-                      </Button>
-                    </div>
-                  </div>
+        {/* Add Todo */}
+        <Card>
+          <CardContent className="p-4 flex flex-col gap-3">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Title"
+                value={newTodo.title}
+                onChange={(e) =>
+                  setNewTodo({ ...newTodo, title: e.target.value })
+                }
+              />
+              <Button variant="ghost" onClick={() => startSpeech("title")}>
+                {isListeningTitle ? <Mic size={20} /> : <MicOff size={20} />}
+              </Button>
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Description"
+                value={newTodo.description}
+                onChange={(e) =>
+                  setNewTodo({ ...newTodo, description: e.target.value })
+                }
+              />
+              <Button
+                variant="ghost"
+                onClick={() => startSpeech("description")}
+              >
+                {isListeningDescription ? (
+                  <Mic size={20} />
                 ) : (
-                  <div className="flex-1 space-y-1">
-                    <div className="text-lg font-semibold flex items-center gap-2">
-                      {todo.title}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() =>
-                          speak(`${todo.title}. ${todo.description}`)
-                        }
-                      >
-                        {isSpeaking ? (
-                          <Volume2 size={18} />
-                        ) : (
-                          <VolumeX size={18} />
-                        )}
-                      </Button>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {todo.description}
-                    </p>
-                  </div>
+                  <MicOff size={20} />
                 )}
-                <div className="flex gap-2 items-start">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleToggleComplete(todo)}
-                  >
-                    <CheckCircle
-                      size={24}
-                      className={
-                        todo.is_complete ? "text-green-500" : "text-gray-400"
-                      }
-                    />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleEdit(todo)}
-                  >
-                    <Edit3 size={20} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => handleDelete(todo.id)}
-                    disabled={isDeleting}
-                  >
-                    <Trash2 size={20} className="text-red-500" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
-    </main>
+              </Button>
+            </div>
+            <Button
+              onClick={handleAddTodo}
+              className="w-fit"
+              disabled={isAdding}
+            >
+              <Plus size={18} className="mr-2" /> Add Todo
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Filter + Stats */}
+        <div className="flex justify-between items-center flex-wrap gap-3">
+          <div className="space-x-2">
+            <Button
+              variant={filter === "all" ? "default" : "outline"}
+              onClick={() => setFilter("all")}
+            >
+              All
+            </Button>
+            <Button
+              variant={filter === "completed" ? "default" : "outline"}
+              onClick={() => setFilter("completed")}
+            >
+              Completed
+            </Button>
+            <Button
+              variant={filter === "remaining" ? "default" : "outline"}
+              onClick={() => setFilter("remaining")}
+            >
+              Remaining
+            </Button>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            📊 Total: {stats.total} | ✅ Completed: {stats.completed} | ⏳
+            Remaining: {stats.remaining}
+          </div>
+        </div>
+
+        {/* Todo List */}
+        <div className="space-y-4">
+          {loading ? (
+            <p className="text-center">Loading...</p>
+          ) : filteredTodos.length === 0 ? (
+            <p className="text-center text-muted-foreground">
+              No todos to show.
+            </p>
+          ) : (
+            filteredTodos.map((todo) => (
+              <Card key={todo.id}>
+                <CardContent className="p-4 flex justify-between items-start">
+                  {editingTodoId === todo.id ? (
+                    <div className="flex-1 space-y-2">
+                      <Input
+                        value={editData.title}
+                        onChange={(e) =>
+                          setEditData({ ...editData, title: e.target.value })
+                        }
+                      />
+                      <Input
+                        value={editData.description}
+                        onChange={(e) =>
+                          setEditData({
+                            ...editData,
+                            description: e.target.value,
+                          })
+                        }
+                      />
+                      <div className="flex gap-2 mt-2">
+                        <Button
+                          onClick={() => handleSaveEdit(todo.id)}
+                          size="sm"
+                          disabled={isSavingEdit}
+                        >
+                          <Save size={16} className="mr-1" />
+                          Save
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => setEditingTodoId(null)}
+                          size="sm"
+                        >
+                          <X size={16} /> Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex-1 space-y-1">
+                      <div className="text-lg font-semibold flex items-center gap-2">
+                        {todo.title}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() =>
+                            speak(`${todo.title}. ${todo.description}`)
+                          }
+                        >
+                          {isSpeaking ? (
+                            <Volume2 size={18} />
+                          ) : (
+                            <VolumeX size={18} />
+                          )}
+                        </Button>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {todo.description}
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex gap-2 items-start">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleToggleComplete(todo)}
+                    >
+                      <CheckCircle
+                        size={24}
+                        className={
+                          todo.is_complete ? "text-green-500" : "text-gray-400"
+                        }
+                      />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(todo)}
+                    >
+                      <Edit3 size={20} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(todo.id)}
+                      disabled={isDeleting}
+                    >
+                      <Trash2 size={20} className="text-red-500" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+      </main>
     </div>
   );
 };
 
-export default page;
+export default Page;
